@@ -39,3 +39,17 @@ Programatically send AWS usage report to Zulip.
 You need `AWSBudgetsReadOnlyAccess` to fetch the AWS usage data.
 
 Check your current permission policy on IAM > Users.
+
+## License
+
+```
+Copyright (C) 2022 Fujimoto Seiji <fujimoto@clear-code.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License v2.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+```
