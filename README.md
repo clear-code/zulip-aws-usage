@@ -20,6 +20,19 @@ Programatically send AWS usage report to Zulip.
    region = ap-northeast-1
    ```
 
+   * If need, you can use multiple profiles.
+
+   ```console
+   $ aws configure --profile bot
+   $ cat ~/.aws/credentials
+   [default]
+   aws_access_key_id = xxx
+   aws_secret_access_key = xxx
+   [bot]
+   aws_access_key_id = xxx
+   aws_secret_access_key = xxx
+   ```
+
 2. Prepare a bot on Zulip.
 
    * Visit "Settings > Personal > Bot" and create an "incoming webhook" bot.
@@ -36,6 +49,12 @@ Programatically send AWS usage report to Zulip.
    ```console
    $ python3 -m pip install -r requirments.txt
    $ python3 report.py
+   ```
+
+   * If you need to use multiple AWS profiles, you can use `--aws-profile` option to specify the profile.
+
+   ```console
+   $ python3 report.py --aws-profile bot
    ```
 
 ## HowTo Guides
@@ -69,7 +88,7 @@ $ mkdir -p ~/.config/systemd/user/
 $ cp systemd/zulip-aws-usage.* ~/.config/systemd/user/
 ```
 
-Fix the script path in `ExecStart`:
+Fix the script path or options for the script in `ExecStart`:
 
 ```console
 $ vim ~/.config/systemd/user/zulip-aws-usage.service
