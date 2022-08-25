@@ -96,6 +96,7 @@ $ systemctl list-timers --user
 ## License
 
 ```
+Copyright (C) 2022 Daijiro Fukuda <fukuda@clear-code.com>
 Copyright (C) 2022 Fujimoto Seiji <fujimoto@clear-code.com>
 
 This program is free software; you can redistribute it and/or modify
