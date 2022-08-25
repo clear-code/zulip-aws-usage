@@ -7,7 +7,7 @@ Programatically send AWS usage report to Zulip.
 1. Set up an AWS access key.
 
    * If you don't have `AWS CLI`, then install it.
-      * https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html
+      * https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
    ```console
    $ aws configure
