@@ -1,0 +1,9 @@
+[Unit]
+Description=Post AWS usage report to Zulip
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env python3 /path/to/zulip-aws-usage/report.py
+
+[Install]
+WantedBy=default.target

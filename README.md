@@ -60,6 +60,39 @@ You need `AWSBudgetsReadOnlyAccess` to fetch the AWS usage data.
 
 Check your current permission policy on IAM > Users.
 
+### How to schedule bot execution
+
+Install the service definition files:
+
+```console
+$ mkdir -p ~/.config/systemd/user/
+$ cp systemd/zulip-aws-usage.* ~/.config/systemd/user/
+```
+
+Fix the script path in `ExecStart`:
+
+```console
+$ vim ~/.config/systemd/user/zulip-aws-usage.service
+```
+
+Check if the service works:
+
+```console
+$ systemctl start --user zulip-aws-usage.service
+```
+
+If it worked, enable the timer:
+
+```console
+$ systemctl enable --user zulip-aws-usage.timer
+```
+
+You can check the execution schedule as follows:
+
+```console
+$ systemctl list-timers --user
+```
+
 ## License
 
 ```
