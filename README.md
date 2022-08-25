@@ -6,11 +6,17 @@ Programatically send AWS usage report to Zulip.
 
 1. Set up an AWS access key.
 
+   * If you don't have `AWS CLI`, then install it.
+      * https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
    ```console
+   $ aws configure
    $ cat ~/.aws/credentials
    [default]
    aws_access_key_id = xxx
    aws_secret_access_key = xxx
+   $ cat ~/.aws/config
+   [default]
    region = ap-northeast-1
    ```
 
@@ -21,14 +27,14 @@ Programatically send AWS usage report to Zulip.
 3. Set up your notification configuration.
 
    ```console
-   $ cp config.yaml.tmpl
+   $ cp config.yaml.tmpl config.yaml
    $ vim config.yaml
    ```
 
 4. Run pip install and run report.py.
 
    ```console
-   $ python3 -u pip install -r requirments.txt
+   $ python3 -m pip install -r requirments.txt
    $ python3 report.py
    ```
 
