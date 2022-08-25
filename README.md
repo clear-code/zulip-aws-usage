@@ -21,14 +21,14 @@ Programatically send AWS usage report to Zulip.
 3. Set up your notification configuration.
 
    ```console
-   $ cp config.yaml.tmpl
+   $ cp config.yaml.tmpl config.yaml
    $ vim config.yaml
    ```
 
 4. Run pip install and run report.py.
 
    ```console
-   $ python3 -u pip install -r requirments.txt
+   $ python3 -m pip install -r requirments.txt
    $ python3 report.py
    ```
 
