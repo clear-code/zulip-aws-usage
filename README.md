@@ -34,6 +34,20 @@ Programatically send AWS usage report to Zulip.
 
 ## HowTo Guides
 
+### How to send a test message
+
+You can send reports to yoru private chat by setting `zulip.type` to `private`.
+See [Zulip API documentation](https://zulip.com/api/send-message) for details.
+
+```yaml
+zulip:
+  ...
+  type: "private"
+  to: "my-name@example.com"
+  topic: ""
+  ...
+```
+
 ### How to fix "Permission denied" error on AWS
 
 You need `AWSBudgetsReadOnlyAccess` to fetch the AWS usage data.
