@@ -14,9 +14,9 @@ Programatically send AWS usage report to Zulip.
    region = ap-northeast-1
    ```
 
-2. Create a bot on Zulip.
+2. Prepare a bot on Zulip.
 
-   * Visit "Settings > Personal > Bot" and create a "Generic" bot.
+   * Visit "Settings > Personal > Bot" and create an "incoming webhook" bot.
 
 3. Set up your notification configuration.
 
