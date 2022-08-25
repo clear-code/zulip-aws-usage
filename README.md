@@ -103,8 +103,7 @@ $ systemctl start --user zulip-aws-usage.service
 If it worked, enable the timer:
 
 ```console
-$ systemctl enable --user zulip-aws-usage.timer
-$ systemctl start --user zulip-aws-usage.timer
+$ systemctl enable --now --user zulip-aws-usage.timer
 ```
 
 You can check the execution schedule as follows:
