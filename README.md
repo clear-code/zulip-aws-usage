@@ -75,7 +75,7 @@ zulip:
 
 ### How to fix "Permission denied" error on AWS
 
-You need `AWSBudgetsReadOnlyAccess` to fetch the AWS usage data.
+You need `AWSBudgetsReadOnlyAccess` and ` AmazonEC2ReadOnlyAccess` to fetch the AWS usage data.
 
 Check your current permission policy on IAM > Users.
 
