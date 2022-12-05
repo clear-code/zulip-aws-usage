@@ -23,6 +23,18 @@ def get_monthly_cost(config, aws_profile_name):
     forecast = resp['Budgets'][0]['CalculatedSpend']['ForecastedSpend']['Amount']
     return (float(cost), float(forecast))
 
+def get_server_stats(config, aws_profile_name):
+    # TODO Define AWSUsage() class to factor out the boilarplate.
+    session = boto3.Session(profile_name=aws_profile_name)
+    client = session.client("ec2")
+    resp = client.describe_instances()
+    nserver = 0
+    for resv in resp["Reservations"]:
+        for inst in resv['Instances']:
+            if inst['State']['Name'] != 'terminated':
+                nserver += 1
+    return nserver
+
 def send_message(config, message):
     client = zulip.Client(site=config['zulip']['site'],
                           email=config['zulip']['email'],
@@ -35,16 +47,17 @@ def send_message(config, message):
         'content': message
     })
 
-def format_message(config, cost, forecast):
+def format_message(config, cost, forecast, nserver):
     today = datetime.date.today()
     template = config['zulip']['message']
     return template.format(year=today.year, month=today.month, day=today.day,
-                           cost=cost, forecast=forecast)
+                           cost=cost, forecast=forecast, nserver=nserver)
 
 def main(aws_profile_name = "default", dryrun=False):
     config = load_config()
     cost, forecast = get_monthly_cost(config, aws_profile_name)
-    message = format_message(config, cost, forecast)
+    nserver = get_server_stats(config, aws_profile_name)
+    message = format_message(config, cost, forecast, nserver)
     if dryrun:
         print(message)
     else:
