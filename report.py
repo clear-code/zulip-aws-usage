@@ -54,9 +54,43 @@ class AWSUsage(object):
         return self._custom_session
 
 
-def load_config():
-    with open(CONFIG_FILE) as fp:
-        return yaml.load(fp, Loader=yaml.Loader)
+class ConfigLoader(object):
+    @staticmethod
+    def load():
+        config = {
+            'aws': {},
+            'zulip': {},
+        }
+        if os.path.exists(CONFIG_FILE):
+            config = ConfigLoader._load_file()
+        config = ConfigLoader._apply_env(config)
+        return config
+
+    @staticmethod
+    def _load_file():
+        with open(CONFIG_FILE) as fp:
+            return yaml.load(fp, Loader=yaml.Loader)
+
+    @staticmethod
+    def _apply_env(config):
+        if 'AWS_ACCOUNT_ID' in os.environ:
+            config['aws']['account_id'] = os.environ['AWS_ACCOUNT_ID']
+        if 'ZULIP_SITE' in os.environ:
+            config['zulip']['site'] = os.environ['ZULIP_SITE']
+        if 'ZULIP_EMAIL' in os.environ:
+            config['zulip']['email'] = os.environ['ZULIP_EMAIL']
+        if 'ZULIP_API_KEY' in os.environ:
+            config['zulip']['api_key'] = os.environ['ZULIP_API_KEY']
+        if 'ZULIP_TYPE' in os.environ:
+            config['zulip']['type'] = os.environ['ZULIP_TYPE']
+        if 'ZULIP_TO' in os.environ:
+            config['zulip']['to'] = os.environ['ZULIP_TO']
+        if 'ZULIP_TOPIC' in os.environ:
+            config['zulip']['topic'] = os.environ['ZULIP_TOPIC']
+        if 'ZULIP_MESSAGE' in os.environ:
+            config['zulip']['message'] = os.environ['ZULIP_MESSAGE']
+        return config
+
 
 def send_message(config, message):
     client = zulip.Client(site=config['zulip']['site'],
@@ -77,7 +111,7 @@ def format_message(config, cost, forecast, nserver):
                            cost=cost, forecast=forecast, nserver=nserver)
 
 def main(aws_profile_name='default', use_aws_default_session=False, dryrun=False):
-    config = load_config()
+    config = ConfigLoader.load()
 
     aws_usage = AWSUsage(config['aws']['account_id'], use_aws_default_session)
     if not use_aws_default_session:
