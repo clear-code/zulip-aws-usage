@@ -26,14 +26,14 @@ class AWSUsage(object):
         self._profile_name = name
 
     def get_monthly_cost(self):
-        client= self._get_client('budgets')
+        client = self._get_client('budgets')
         resp = client.describe_budgets(AccountId=self._account_id)
         cost = resp['Budgets'][0]['CalculatedSpend']['ActualSpend']['Amount']
         forecast = resp['Budgets'][0]['CalculatedSpend']['ForecastedSpend']['Amount']
         return (float(cost), float(forecast))
 
     def get_server_stats(self):
-        client= self._get_client('ec2')
+        client = self._get_client('ec2')
         resp = client.describe_instances()
         nserver = 0
         for resv in resp['Reservations']:
