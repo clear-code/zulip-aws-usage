@@ -57,6 +57,26 @@ Programatically send AWS usage report to Zulip.
    $ python3 report.py --aws-profile bot
    ```
 
+## Environmental variables
+
+You can overwrite each config by the following environmental variables.
+
+|   Env var name   |   Config name    |
+|------------------|------------------|
+| `AWS_ACCOUNT_ID` | `aws.account_id` |
+| `ZULIP_SITE`     | `zulip.site`     |
+| `ZULIP_EMAIL`    | `zulip.email`    |
+| `ZULIP_API_KEY`  | `zulip.api_key`  |
+| `ZULIP_TYPE`     | `zulip.type`     |
+| `ZULIP_TO`       | `zulip.to`       |
+| `ZULIP_TOPIC`    | `zulip.topic`    |
+| `ZULIP_MESSAGE`  | `zulip.message`  |
+
+Please see `config.yaml.tmpl` for an example value.
+
+You can run this script without the config file.
+It would be suitable for CI execution.
+
 ## HowTo Guides
 
 ### How to send a test message
@@ -80,6 +100,11 @@ You need `AWSBudgetsReadOnlyAccess` and ` AmazonEC2ReadOnlyAccess` to fetch the 
 Check your current permission policy on IAM > Users.
 
 ### How to schedule bot execution
+
+* systemd
+* GitHub Actions
+
+#### systemd
 
 Install the service definition files:
 
@@ -110,6 +135,74 @@ You can check the execution schedule as follows:
 
 ```console
 $ systemctl list-timers --user
+```
+
+#### GitHub Actions (Use OpenID Connect)
+
+This section explains the way to use OpenID Connect without using access keys.
+Please handle AWS authentication at your own risk, making sure you understand the official documentation beforehand.
+
+1. Set up AWS Identity providers and Roles with reference to the following documents.
+   * [Configuring OpenID Connect in Amazon Web Services](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+1. Create an empty GitHub repository.
+1. Set each config of this script to GitHub Actions secrets and variables.
+   * Repository variables
+     * `ZULIP_MESSAGE`
+     * `ZULIP_TO`
+     * `ZULIP_TOPIC`
+     * `ZULIP_TYPE`
+   * Secrets variables
+     * `AWS_ACCOUNT_ID`
+     * `ZULIP_API_KEY`
+     * `ZULIP_EMAIL`
+     * `ZULIP_SITE`
+1. Set the role name you set up to secrets so that you can use it on the CI setting.
+   * For example, the name like `AWS_ASSUME_ROLE_NAME`.
+1. Set up GitHub actions to run this script.
+   * Checkout this repository.
+   * Configure AWS Credentials with reference to [Configuring OpenID Connect in Amazon Web Services](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services).
+     * Use [aws-actions/configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials).
+   * Run this script with `--use-aws-default-session` option.
+
+Example:
+
+```yaml
+name: Report
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  report:
+    name: Report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: clear-code/zulip-aws-usage
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: (AWS-REGION)
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ASSUME_ROLE_NAME }}
+      - name: Install requirments
+        run: |
+          pip install -r requirements.txt
+      - name: Report usage
+        run: |
+          python report.py --use-aws-default-session
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          ZULIP_SITE: ${{ secrets.ZULIP_SITE }}
+          ZULIP_EMAIL: ${{ secrets.ZULIP_EMAIL }}
+          ZULIP_API_KEY: ${{ secrets.ZULIP_API_KEY }}
+          ZULIP_TYPE: ${{ vars.ZULIP_TYPE }}
+          ZULIP_TO: ${{ vars.ZULIP_TO }}
+          ZULIP_TOPIC: ${{ vars.ZULIP_TOPIC }}
+          ZULIP_MESSAGE: ${{ vars.ZULIP_MESSAGE }}
 ```
 
 ## License
